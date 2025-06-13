@@ -13,6 +13,22 @@ body {
   gap: 10px;
   padding: 10px;
 }
+@media (max-width: 600px) {
+  .memory-card {
+    height: 80px;
+  }
+
+  .memory-card img {
+    width: 100%;
+    height: auto;
+  }
+}
+.memory-card .front-face,
+.memory-card .back-face {
+  background-size: cover;
+  background-position: center;
+}
+
   .game-container {
     padding: 20px;
     max-width: 800px;
