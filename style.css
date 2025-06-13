@@ -21,7 +21,7 @@ body {
 
   .game-container {
     padding: 20px;
-    max-width: 800px;
+    max-width: 600px;
     margin: auto;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 15px;
@@ -48,7 +48,7 @@ body {
   }
   
   .card {
-    width: 100px;
+    width: 90px;
     height: 100px;
     background-color: #111;
     border: 2px solid #fff;
@@ -66,7 +66,7 @@ body {
   .card .front,
   .card .back {
     position: absolute;
-    width: 100%;
+    width: 90%;
     height: 100%;
     backface-visibility: hidden;
     border-radius: 10px;
@@ -96,7 +96,7 @@ body {
 
 /* الحفاظ على نسبة البطاقة مربعة */
 .memory-card {
-  width: 100%;
+  width: 90%;
   aspect-ratio: 1 / 1;
   position: relative;
   perspective: 1000px;
