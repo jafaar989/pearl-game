@@ -1,35 +1,35 @@
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
-  background: url('images/back1.jpeg') no-repeat center center fixed;
+  background-image: url("images/background.jpg");
   background-size: cover;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 h1 {
-  color: white;
-  text-shadow: 1px 1px 3px black;
-  margin-top: 20px;
-  font-size: 2rem;
   text-align: center;
+  color: white;
+  margin-top: 20px;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 5px black;
 }
 
 .memory-game {
+  width: 600px;
+  height: 600px;
+  margin: 40px auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 10px;
-  padding: 10px;
-  width: 90%;
-  max-width: 600px;
-  margin: auto;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 15px;
+  perspective: 1000px;
 }
 
 .memory-card {
-  position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
+  position: relative;
   transform: scale(1);
   transform-style: preserve-3d;
   transition: transform 0.5s;
@@ -39,28 +39,36 @@ h1 {
   transform: rotateY(180deg);
 }
 
-.memory-card .front-face,
-.memory-card .back-face {
-  position: absolute;
+.front-face,
+.back-face {
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  border-radius: 10px;
+  position: absolute;
+  border-radius: 5px;
   background-size: cover;
   background-position: center;
+  backface-visibility: hidden;
 }
 
-.memory-card .back-face {
+.front-face {
   transform: rotateY(180deg);
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 600px) {
-  h1 {
-    font-size: 1.5rem;
+/* ✅ دعم الشاشات الصغيرة */
+@media (max-width: 768px) {
+  .memory-game {
+    width: 90%;
+    height: auto;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
   }
 
-  .memory-game {
-    grid-template-columns: repeat(3, 1fr);
+  .memory-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-top: 15px;
   }
 }
