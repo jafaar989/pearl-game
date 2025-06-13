@@ -1,33 +1,23 @@
-body {
+body { 
+ 
+  padding: 0;
+    
     margin: 0;
     font-family: 'Cairo', sans-serif;
     background: url('images/back1.jpeg') no-repeat center center fixed;
     background-size: cover;
+     background-position: center;
+      background-attachment: fixed;
     background-color: #000; /* fallback */
     color: #fff;
     text-align: center;
   }
-  .memory-game {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 10px;
-  padding: 10px;
-}
-@media (max-width: 600px) {
-  .memory-card {
-    height: 80px;
-  }
+ 
 
-  .memory-card img {
-    width: 100%;
-    height: auto;
-  }
-}
-.memory-card .front-face,
-.memory-card .back-face {
-  background-size: cover;
-  background-position: center;
-}
+
+
+
+
 
   .game-container {
     padding: 20px;
@@ -56,7 +46,14 @@ body {
     justify-content: center;
     margin-bottom: 20px;
   }
-  
+  .memory-game {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  max-width: 600px;
+  margin: auto;
+}
   .card {
     width: 100px;
     height: 100px;
@@ -95,4 +92,20 @@ body {
     background-size: cover;
     background-position: center;
   }
-  
+
+  @media (max-width: 600px) {
+  .memory-card {
+    height: auto;
+  }
+
+  .memory-card .front-face,
+  .memory-card .back-face {
+    background-size: cover;
+    background-position: center;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
