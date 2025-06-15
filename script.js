@@ -1,34 +1,52 @@
-// ✅ أولاً: تأكد من أن playerId موجود
-let playerId = localStorage.getItem("playerId");
-if (!playerId) {
-  playerId = Math.random().toString(36).substring(2); // مُعرف عشوائي
-  localStorage.setItem("playerId", playerId);
-}
+<!DOCTYPE html><html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة ذاكرة القراصنة</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <h1>🏴‍☠️⚓️🏴‍☠️ لعبة ذاكرة القراصنة 🏴‍☠️⚓️🧠</h1>
+    <div id="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
+    <div class="grid"></div>
+  </div>  <!-- Firebase and Game Logic as module -->  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-// ✅ انتظر تحميل الصفحة
-document.addEventListener("DOMContentLoaded", async () => {
-  // ✅ انتظر تهيئة Firebase قبل استخدامه
-  // db يجب أن تكون معرفة في كود الـ HTML وتصدّر بشكل صحيح
+    const firebaseConfig = {
+      apiKey: "AIzaSyABv1NyGChRCfG6osyNyX7-gr97vVhoIwU",
+      authDomain: "pearlgame-b7a37.firebaseapp.com",
+      projectId: "pearlgame-b7a37",
+      storageBucket: "pearlgame-b7a37.appspot.com",
+      messagingSenderId: "208215390214",
+      appId: "1:208215390214:web:ca29373dcb2ddb94a8ab87"
+    };
 
-  // تحقق هل اللاعب لعب من قبل
-  try {
-    const doc = await db.collection("players").doc(playerId).get();
-    if (doc.exists) {
-      alert("لقد لعبت من قبل! لا يمكنك اللعب مجددًا.");
-      return; // ❌ نخرج مباشرة ولا نبدأ اللعبة
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let playerId = localStorage.getItem("playerId");
+    if (!playerId) {
+      playerId = Math.random().toString(36).substring(2);
+      localStorage.setItem("playerId", playerId);
     }
-  } catch (error) {
-    console.error("حدث خطأ أثناء التحقق من اللاعب:", error);
-  }
 
-  // 🧠 تابع إنشاء اللعبة هنا
+    import("./script.js").then(module => {
+      module.startGame(db, playerId);
+    });
+  </script></body>
+</html>
+// هذا الملف يفترض أنه يُستدعى من index.html باستخدام import وتفعيل startGame(db, playerId)
+
+export function startGame(db, playerId) {
   const pirateImages = [
-    "images/images.jpeg", 
+    "images/images.jpeg",
     "images/images1.jpg",
     "images/images2.jpg",
     "images/images3.jpeg",
     "images/images4.jpeg",
-    "images/images5.jpeg"
+    "images/images5.jpeg",
   ];
 
   const flipSound = new Audio("sounds/sound.mp3");
@@ -42,6 +60,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   let timeLeft = 50;
   let timer;
   let gameOver = false;
+
+  // التحقق إذا لعب المستخدم مسبقًا
+  db.collection("players").doc(playerId).get().then((doc) => {
+    if (doc.exists) {
+      alert("لقد لعبت من قبل! لا يمكنك اللعب مجددًا.");
+      gameOver = true;
+      return;
+    } else {
+      createCards();
+      startTimer();
+    }
+  });
 
   function createCards() {
     const allImages = [...pirateImages, ...pirateImages];
@@ -76,8 +106,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       grid.appendChild(card);
 
       card.addEventListener("click", () => {
-        if (!gameOver) flipSound.play();
-        flipCard(card, imgSrc);
+        if (!gameOver) {
+          flipSound.currentTime = 0;
+          flipSound.play();
+          flipCard(card, imgSrc);
+        }
       });
     });
   }
@@ -129,25 +162,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function endGame(won) {
     gameOver = true;
-    document.querySelectorAll(".card").forEach(card => card.style.pointerEvents = "none");
+    document.querySelectorAll(".card").forEach((card) => card.style.pointerEvents = "none");
 
-    saveResult(won); // ✅ حفظ النتيجة
+    saveResult(won);
+
     setTimeout(() => {
       alert(won ? "🏆 فزت! جميع الكنوز تم كشفها!" : "💀 انتهى الوقت! أعد تحميل الصفحة للمحاولة من جديد.");
-    }, 500);
+    }, 300);
   }
-function saveResult(didWin) {
+
+  function saveResult(didWin) {
     db.collection("players").doc(playerId).set({
       result: didWin ? "win" : "lose",
       timestamp: new Date().toISOString()
     }).then(() => {
-      console.log("✅ تم حفظ النتيجة بنجاح");
+      console.log("تم حفظ النتيجة بنجاح");
     }).catch((error) => {
-      console.error("❌ خطأ في حفظ النتيجة:", error);
+      console.error("خطأ في حفظ النتيجة:", error);
     });
   }
-
-  // بدء اللعبة:
-  createCards();
-  startTimer();
-});
+}
