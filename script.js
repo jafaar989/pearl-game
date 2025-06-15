@@ -1,6 +1,6 @@
-// هذا الملف يفترض أنه يُستدعى من index.html باستخدام import وتفعيل startGame(db, playerId)
+import { collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-export function startGame(db, playerId) {
+export async function startGame(db, playerId) {
   const pirateImages = [
     "images/images.jpeg",
     "images/images1.jpg",
@@ -23,16 +23,17 @@ export function startGame(db, playerId) {
   let gameOver = false;
 
   // التحقق إذا لعب المستخدم مسبقًا
-  db.collection("players").doc(playerId).get().then((doc) => {
-    if (doc.exists) {
-      alert("لقد لعبت من قبل! لا يمكنك اللعب مجددًا.");
-      gameOver = true;
-      return;
-    } else {
-      createCards();
-      startTimer();
-    }
-  });
+  const playerDocRef = doc(db, "players", playerId);
+  const docSnap = await getDoc(playerDocRef);
+
+  if (docSnap.exists()) {
+    alert("لقد لعبت من قبل! لا يمكنك اللعب مجددًا.");
+    gameOver = true;
+    return;
+  } else {
+    createCards();
+    startTimer();
+  }
 
   function createCards() {
     const allImages = [...pirateImages, ...pirateImages];
@@ -123,7 +124,7 @@ export function startGame(db, playerId) {
 
   function endGame(won) {
     gameOver = true;
-    document.querySelectorAll(".card").forEach((card) => card.style.pointerEvents = "none");
+    document.querySelectorAll(".card").forEach((card) => (card.style.pointerEvents = "none"));
 
     saveResult(won);
 
@@ -132,14 +133,15 @@ export function startGame(db, playerId) {
     }, 300);
   }
 
-  function saveResult(didWin) {
-    db.collection("players").doc(playerId).set({
-      result: didWin ? "win" : "lose",
-      timestamp: new Date().toISOString()
-    }).then(() => {
+  async function saveResult(didWin) {
+    try {
+      await setDoc(playerDocRef, {
+        result: didWin ? "win" : "lose",
+        timestamp: new Date().toISOString(),
+      });
       console.log("تم حفظ النتيجة بنجاح");
-    }).catch((error) => {
+    } catch (error) {
       console.error("خطأ في حفظ النتيجة:", error);
-    });
+    }
   }
 }
