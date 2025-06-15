@@ -7,6 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
       "images/images4.jpeg",   // 
       "images/images5.jpeg"    // 
     ];
+    db.collection("players").doc(playerId).get().then((doc) => {
+  if (doc.exists) {
+    alert("لقد لعبت من قبل! لا يمكنك اللعب مجددًا.");
+    lockBoard = true;
+  } else {
+    // تابع اللعبة بشكل طبيعي
+  }
+});
     const flipSound = new Audio("sounds/sound.mp3");
 const backgroundMusic = new Audio("sounds/back.mp3");
 backgroundMusic.loop = true; // تشغيل متكرر للموسيقى الخلفية
@@ -117,6 +125,20 @@ front.appendChild(frontImg);
         alert(won ? "🏆 فزت! جميع الكنوز تم كشفها!" : "💀 انتهى الوقت! أعد تحميل الصفحة للمحاولة من جديد.");
       }, 300);
     }
+    // استدعاء معرف اللاعب
+const playerId = localStorage.getItem("playerId");
+
+// حفظ النتيجة
+function saveResult(didWin) {
+  db.collection("players").doc(playerId).set({
+    result: didWin ? "win" : "lose",
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("تم حفظ النتيجة بنجاح");
+  }).catch((error) => {
+    console.error("خطأ في حفظ النتيجة:", error);
+  });
+}
   
     // بدء اللعب بعد تحميل الصفحة
     createCards();
