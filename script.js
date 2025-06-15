@@ -1,42 +1,3 @@
-<!DOCTYPE html><html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لعبة ذاكرة القراصنة</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="game-container">
-    <h1>🏴‍☠️⚓️🏴‍☠️ لعبة ذاكرة القراصنة 🏴‍☠️⚓️🧠</h1>
-    <div id="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
-    <div class="grid"></div>
-  </div>  <!-- Firebase and Game Logic as module -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyABv1NyGChRCfG6osyNyX7-gr97vVhoIwU",
-      authDomain: "pearlgame-b7a37.firebaseapp.com",
-      projectId: "pearlgame-b7a37",
-      storageBucket: "pearlgame-b7a37.appspot.com",
-      messagingSenderId: "208215390214",
-      appId: "1:208215390214:web:ca29373dcb2ddb94a8ab87"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let playerId = localStorage.getItem("playerId");
-    if (!playerId) {
-      playerId = Math.random().toString(36).substring(2);
-      localStorage.setItem("playerId", playerId);
-    }
-
-    import("./script.js").then(module => {
-      module.startGame(db, playerId);
-    });
-  </script></body>
-</html>
 // هذا الملف يفترض أنه يُستدعى من index.html باستخدام import وتفعيل startGame(db, playerId)
 
 export function startGame(db, playerId) {
